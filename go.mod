@@ -3,7 +3,7 @@ module github.com/adadkins/glaw
 go 1.21.0
 
 require (
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.8.1
 	go.uber.org/zap v1.26.0
 	gopkg.in/dnaeon/go-vcr.v3 v3.1.2
 )
