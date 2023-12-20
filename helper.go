@@ -20,6 +20,8 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 		return nil, err
 	}
 
+	req.Header.Set("Content-Type", "application/json")
+
 	// Set the API token for authentication (if required)
 	if lc.APIToken != "" {
 		req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", lc.APIToken))
