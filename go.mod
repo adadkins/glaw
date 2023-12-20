@@ -1,4 +1,4 @@
-module glaw
+module github.com/adadkins/glaw
 
 go 1.21.0
 

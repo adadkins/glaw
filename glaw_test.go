@@ -3,10 +3,11 @@ package glaw_test
 import (
 	"encoding/json"
 	"fmt"
-	"glaw"
 	"net/http"
 	"testing"
 	"time"
+
+	"github.com/adadkins/glaw"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/dnaeon/go-vcr.v3/recorder"
