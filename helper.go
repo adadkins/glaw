@@ -11,7 +11,7 @@ import (
 // calls an endpoint of a Lemmy instance API
 func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Reader) ([]byte, error) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(lc.timeout)*time.Second)
 	defer cancel()
 
 	// Prepare the request
@@ -19,6 +19,8 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Set("Content-Type", "application/json")
 
 	// Set the API token for authentication (if required)
 	if lc.APIToken != "" {
@@ -32,6 +34,15 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 	resp, err := lc.client.Do(req)
 	if err != nil {
 		return nil, err
+	}
+
+	// Check if the context has timed out
+	select {
+	case <-ctx.Done():
+		lc.logger.Error("Request timed out")
+		return nil, ctx.Err()
+	default:
+		// Continue processing if the context has not timed out
 	}
 	defer resp.Body.Close()
 
