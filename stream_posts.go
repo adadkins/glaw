@@ -32,13 +32,13 @@ func (lc *LemmyClient) StreamNewPosts(pauseAfter int, closeChan chan struct{}) c
 			// parse this into struct
 			postsBody, err := lc.callLemmyAPI("GET", "post/list?sort=New", nil)
 			if err != nil {
-				lc.logger.Error(err.Error())
+				lc.logger.Info(err.Error())
 			}
 			var postResponse PostsResponse
 			err = json.Unmarshal(postsBody, &postResponse)
 			if err != nil {
 				lc.logger.Sugar().Infof("postsBody: %s", postsBody)
-				lc.logger.Error(err.Error())
+				lc.logger.Info(err.Error())
 			}
 
 			for _, postview := range postResponse.PostView {

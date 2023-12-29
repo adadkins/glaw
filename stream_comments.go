@@ -21,13 +21,13 @@ func (lc *LemmyClient) StreamNewComments(pauseAfter int, closeChan chan struct{}
 		for {
 			commentsBody, err := lc.callLemmyAPI("GET", "comment/list?sort=New", nil)
 			if err != nil {
-				lc.logger.Error(err.Error())
+				lc.logger.Info(err.Error())
 			} else {
 				var postResponse CommentsResponse
 				err = json.Unmarshal(commentsBody, &postResponse)
 				if err != nil {
 					lc.logger.Sugar().Infof("postsBody: %s", commentsBody)
-					lc.logger.Error(err.Error())
+					lc.logger.Info(err.Error())
 				}
 
 				for _, comment := range postResponse.Comments {
@@ -37,7 +37,7 @@ func (lc *LemmyClient) StreamNewComments(pauseAfter int, closeChan chan struct{}
 							seenItems[comment.Comment.ID] = true
 							backoffReset = true
 						default:
-							lc.logger.Error("Channel closed or not ready")
+							lc.logger.Info("Channel closed or not ready")
 							return
 						}
 					}

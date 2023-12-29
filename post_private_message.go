@@ -32,14 +32,14 @@ func (lc *LemmyClient) SendPrivateMessage(messageBody string, targetUserID int) 
 
 	jsonData, err := json.Marshal(pmStruct)
 	if err != nil {
-		lc.logger.Error(err.Error())
+		lc.logger.Info(err.Error())
 		return err
 	}
 
 	lc.logger.Sugar().Infoln(string(jsonData))
 	_, err = lc.callLemmyAPI("POST", "private_message", bytes.NewBuffer(jsonData))
 	if err != nil {
-		lc.logger.Error(err.Error())
+		lc.logger.Info(err.Error())
 		return err
 	}
 
