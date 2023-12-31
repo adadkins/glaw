@@ -65,7 +65,7 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 		// Read the response body
 		respBody, err := io.ReadAll(resp.Body)
 		if err != nil {
-			lc.logger.Info(err.Error())
+			lc.logger.Sugar().Infof("Error: %s, status code: %s", err.Error(), "status code: %s", resp.StatusCode)
 			return nil, err
 		}
 
