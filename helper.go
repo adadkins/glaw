@@ -11,6 +11,7 @@ import (
 
 // calls an endpoint of a Lemmy instance API
 func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Reader) ([]byte, error) {
+	startTime := time.Now()
 	// Set the maximum number of retries
 	maxRetries := 5
 
@@ -52,7 +53,7 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 		select {
 		case <-ctx.Done():
 			cancel()
-			lc.logger.Info("Request timed out")
+			lc.logRequestInfo(startTime, "Request timed out")
 			return nil, ctx.Err()
 		default:
 			// Continue processing if the context has not timed out
@@ -65,13 +66,14 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 		// Read the response body
 		respBody, err := io.ReadAll(resp.Body)
 		if err != nil {
-			lc.logger.Sugar().Infof("Error: %s, status code: %s", err.Error(), "status code: %s", resp.StatusCode)
+			lc.logger.Sugar().Infof("Error: %s, status code: %s", err.Error(), "status code: %v", resp.StatusCode)
 			return nil, err
 		}
 
 		// Check if the request was successful
 		if resp.StatusCode != http.StatusOK {
-			lc.logger.Sugar().Infof("request was not ok. code: %s, body: %s", resp.Status, respBody)
+			lc.logRequestInfo(startTime, "Request failed:", resp.Status, string(respBody))
+			lc.logger.Sugar().Infof("request was not ok. code: %s, body: %v", resp.Status, respBody)
 
 			// Retry for certain HTTP status codes if needed
 			if resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode == http.StatusInternalServerError {
@@ -86,4 +88,13 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 
 	// All attempts failed, return an error
 	return nil, fmt.Errorf("maximum number of retries reached")
+}
+
+func (lc *LemmyClient) logRequestInfo(startTime time.Time, messages ...interface{}) {
+	elapsed := time.Since(startTime)
+	lc.logger.Sugar().Infow("Request Info",
+		"ElapsedTime", elapsed,
+		"Timestamp", startTime.Format(time.RFC3339),
+		"Messages", messages,
+	)
 }

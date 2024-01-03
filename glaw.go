@@ -29,7 +29,7 @@ func NewLemmyClient(url, apiToken, cookie string, client *http.Client, logger *z
 }
 
 func (lc *LemmyClient) SetTimeout(timeout int) {
-	if timeout >= 0 {
+	if timeout > 0 {
 		lc.timeout = timeout
 	}
 }
