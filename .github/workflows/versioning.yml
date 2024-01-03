@@ -1,32 +1,22 @@
-name: Increment Version and Create Tag
-
+# example 1: on push to master
+name: Bump version
 on:
   push:
     branches:
       - main
 
 jobs:
-  increment-tag:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
 
-    - name: Bump version and create tag
+    - name: Bump version and push tag
+      uses: anothrNick/github-tag-action@1.64.0 # Don't use @master or @v1 unless you're happy to test the latest version
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config --local user.email "${{ secrets.USER_EMAIL }}"
-        git config --local user.name "${{ secrets.USER_NAME }}"
-        
-        git fetch --tags
-
-        # Get the latest tag
-        latest_tag=$(git tag --sort=-v:refname | head -n 1)
-
-        # Increment the minor version
-        new_version=$(echo $latest_tag | awk -F. '{print $1 "." ($2+1) "." $3}')
-        
-        git tag -a "v${new_version}" -m "Release v${new_version}"
-        git push origin "v${new_version}" --follow-tags -u "${GH_TOKEN}"
-      
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
+        WITH_V: false
