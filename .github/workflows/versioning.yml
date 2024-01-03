@@ -15,6 +15,9 @@ jobs:
 
     - name: Bump version and create tag
       run: |
+        git config --local user.email "${{ secrets.USER_EMAIL }}"
+        git config --local user.name "${{ secrets.USER_NAME }}"
+        
         git fetch --tags
 
         # Get the latest tag
