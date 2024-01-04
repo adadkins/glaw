@@ -12,7 +12,6 @@ type LemmyClient struct {
 	jwtCookie string
 	logger    *zap.Logger
 	client    *http.Client
-	timeout   int
 }
 
 type Client interface {
