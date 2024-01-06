@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 )
 
 // calls an endpoint of a Lemmy instance API
 func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Reader) ([]byte, error) {
+	startTime := time.Now()
 	req, err := http.NewRequest(method, fmt.Sprintf("%s%s", lc.baseURL, endpoint), body)
 	if err != nil {
 		return nil, err
@@ -32,13 +34,13 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 	// Read the response body
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		lc.logger.Sugar().Infof("Error: %s, status code: %v", err.Error(), resp.StatusCode)
+		lc.logger.Sugar().Infof("Error: %s, status code: %v, elapsedTime: %s", err.Error(), resp.StatusCode, time.Since(startTime))
 		return nil, err
 	}
 
 	// Check if the request was successful
 	if resp.StatusCode != http.StatusOK {
-		lc.logger.Sugar().Infof("request was not ok. code: %s, body: %v", resp.Status, respBody)
+		lc.logger.Sugar().Infof("request was not ok. code: %s, body: %v, ElapsedTime: %s", resp.Status, string(respBody), time.Since(startTime))
 		return nil, fmt.Errorf("request failed with status: %s", resp.Status)
 	}
 
