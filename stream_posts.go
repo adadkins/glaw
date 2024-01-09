@@ -30,16 +30,10 @@ func (lc *LemmyClient) StreamNewPosts(pauseAfter int, closeChan chan struct{}) c
 			}
 
 			// parse this into struct
-			postsBody, err := lc.callLemmyAPI("GET", "post/list?sort=New", nil)
-			if err != nil {
-				lc.logger.Info(err.Error())
-			}
+			postsBody, _ := lc.callLemmyAPI("GET", "post/list?sort=New", nil)
+
 			var postResponse PostsResponse
-			err = json.Unmarshal(postsBody, &postResponse)
-			if err != nil {
-				lc.logger.Sugar().Infof("postsBody: %s", postsBody)
-				lc.logger.Info(err.Error())
-			}
+			_ = json.Unmarshal(postsBody, &postResponse)
 
 			for _, postview := range postResponse.PostView {
 				if !seenItems[postview.Post.ID] {
@@ -59,7 +53,6 @@ func (lc *LemmyClient) StreamNewPosts(pauseAfter int, closeChan chan struct{}) c
 			case <-closeChan:
 				// The posts channel was closed as expected
 				close(postsChan)
-				lc.logger.Info("Comments channel closed.")
 			case <-time.After(backoff):
 			}
 

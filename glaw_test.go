@@ -25,7 +25,7 @@ func TestStreamPosts(t *testing.T) {
 		client, recorder := GetRecorderClient(t, "posts")
 		defer recorder.Stop()
 
-		lc, _ := glaw.NewLemmyClient(url, "", jwt, client, nil)
+		lc, _ := glaw.NewLemmyClient(url, "", jwt, client)
 
 		//when
 		posts := lc.StreamNewPosts(5, nil)
@@ -55,7 +55,7 @@ func TestStreamPosts(t *testing.T) {
 		// given
 		client, recorder := GetRecorderClient(t, "posts")
 		defer recorder.Stop()
-		lc, _ := glaw.NewLemmyClient(url, "", jwt, client, nil)
+		lc, _ := glaw.NewLemmyClient(url, "", jwt, client)
 		close := make(chan struct{})
 
 		//when
@@ -87,7 +87,7 @@ func TestStreamPosts(t *testing.T) {
 		client, recorder := GetRecorderClient(t, "posts")
 		defer recorder.Stop()
 
-		lc, _ := glaw.NewLemmyClient(url, "", jwt, client, nil)
+		lc, _ := glaw.NewLemmyClient(url, "", jwt, client)
 
 		// when
 		lc.StreamNewPosts(2, nil)
@@ -107,7 +107,7 @@ func TestStreamComments(t *testing.T) {
 		client, recorder := GetRecorderClient(t, "comments")
 		defer recorder.Stop()
 
-		lc, _ := glaw.NewLemmyClient(url, "", jwt, client, nil)
+		lc, _ := glaw.NewLemmyClient(url, "", jwt, client)
 
 		stopChan := make(chan struct{})
 
@@ -140,7 +140,7 @@ func TestStreamComments(t *testing.T) {
 		client, recorder := GetRecorderClient(t, "comments")
 		defer recorder.Stop()
 
-		lc, err := glaw.NewLemmyClient(url, "", jwt, client, nil)
+		lc, err := glaw.NewLemmyClient(url, "", jwt, client)
 		assert.Equal(t, nil, err)
 
 		stopChan := make(chan struct{})
@@ -173,7 +173,7 @@ func TestStreamComments(t *testing.T) {
 		client, recorder := GetRecorderClient(t, "comments")
 		defer recorder.Stop()
 
-		lc, _ := glaw.NewLemmyClient(url, "", jwt, client, nil)
+		lc, _ := glaw.NewLemmyClient(url, "", jwt, client)
 
 		// when
 		lc.StreamNewComments(2, nil)
@@ -193,7 +193,7 @@ func TestSendPrivateMessage(t *testing.T) {
 		//given
 		client, recorder := GetRecorderClient(t, "send_private_message")
 		defer recorder.Stop()
-		lc, _ := glaw.NewLemmyClient("testURL", "token", "cookie", client, nil)
+		lc, _ := glaw.NewLemmyClient("testURL", "token", "cookie", client)
 
 		//when
 		err := lc.SendPrivateMessage("Test send private message", 12345)
@@ -210,7 +210,7 @@ func TestGetComment(t *testing.T) {
 		//given
 		client, recorder := GetRecorderClient(t, "get_comment")
 		defer recorder.Stop()
-		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client, nil)
+		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client)
 		assert.Equal(t, nil, err)
 		assert.NotNil(t, lc)
 
@@ -226,7 +226,7 @@ func TestGetComment(t *testing.T) {
 		//given
 		client, recorder := GetRecorderClient(t, "get_comment")
 		defer recorder.Stop()
-		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client, nil)
+		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client)
 		assert.Equal(t, nil, err)
 		assert.NotNil(t, lc)
 
@@ -245,7 +245,7 @@ func TestGetPost(t *testing.T) {
 		//given
 		client, recorder := GetRecorderClient(t, "get_post")
 		defer recorder.Stop()
-		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client, nil)
+		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client)
 		assert.Equal(t, nil, err)
 		assert.NotNil(t, lc)
 
@@ -261,7 +261,7 @@ func TestGetPost(t *testing.T) {
 		//given
 		client, recorder := GetRecorderClient(t, "get_post")
 		defer recorder.Stop()
-		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client, nil)
+		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client)
 		assert.Equal(t, nil, err)
 		assert.NotNil(t, lc)
 
@@ -279,7 +279,7 @@ func TestNewLemmyClient(t *testing.T) {
 		//given
 		client, recorder := GetRecorderClient(t, "posts")
 		defer recorder.Stop()
-		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client, nil)
+		lc, err := glaw.NewLemmyClient("testURL", "token", "cookie", client)
 
 		//when
 
@@ -293,7 +293,7 @@ func TestNewLemmyClient(t *testing.T) {
 		client, recorder := GetRecorderClient(t, "posts")
 		defer recorder.Stop()
 		//when
-		lc, err := glaw.NewLemmyClient("", "token", "cookie", client, nil)
+		lc, err := glaw.NewLemmyClient("", "token", "cookie", client)
 		//then
 		assert.Nil(t, lc)
 		assert.Equal(t, "url required", err.Error())

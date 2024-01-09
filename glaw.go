@@ -3,17 +3,11 @@ package glaw
 import (
 	"errors"
 	"net/http"
-
-	"go.uber.org/zap"
 )
 
-func NewLemmyClient(url, apiToken, cookie string, client *http.Client, logger *zap.Logger) (*LemmyClient, error) {
+func NewLemmyClient(url, apiToken, cookie string, client *http.Client) (*LemmyClient, error) {
 	if url == "" {
 		return nil, errors.New("url required")
-	}
-
-	if logger == nil {
-		logger = zap.NewExample()
 	}
 
 	// set default timeout
@@ -22,7 +16,6 @@ func NewLemmyClient(url, apiToken, cookie string, client *http.Client, logger *z
 		APIToken:  apiToken,
 		jwtCookie: cookie,
 		client:    client,
-		logger:    logger,
 	}
 	return &lc, nil
 }

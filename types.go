@@ -2,15 +2,12 @@ package glaw
 
 import (
 	"net/http"
-
-	"go.uber.org/zap"
 )
 
 type LemmyClient struct {
 	baseURL   string
 	APIToken  string
 	jwtCookie string
-	logger    *zap.Logger
 	client    *http.Client
 }
 

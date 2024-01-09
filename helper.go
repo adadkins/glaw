@@ -34,14 +34,12 @@ func (lc *LemmyClient) callLemmyAPI(method string, endpoint string, body io.Read
 	// Read the response body
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		lc.logger.Sugar().Infof("Error: %s, status code: %v, elapsedTime: %s", err.Error(), resp.StatusCode, time.Since(startTime))
-		return nil, err
+		return nil, fmt.Errorf("Error: %s, status code: %v, elapsedTime: %s", err.Error(), resp.StatusCode, time.Since(startTime))
 	}
 
 	// Check if the request was successful
 	if resp.StatusCode != http.StatusOK {
-		lc.logger.Sugar().Infof("request was not ok. code: %s, body: %v, ElapsedTime: %s", resp.Status, string(respBody), time.Since(startTime))
-		return nil, fmt.Errorf("request failed with status: %s", resp.Status)
+		return nil, fmt.Errorf("request was not ok. code: %s, body: %v, ElapsedTime: %s", resp.Status, string(respBody), time.Since(startTime))
 	}
 
 	return respBody, nil

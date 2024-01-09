@@ -19,27 +19,19 @@ func (lc *LemmyClient) StreamNewComments(pauseAfter int, closeChan chan struct{}
 		responsesWithoutNew := 0
 
 		for {
-			commentsBody, err := lc.callLemmyAPI("GET", "comment/list?sort=New", nil)
-			if err != nil {
-				lc.logger.Info(err.Error())
-			} else {
-				var postResponse CommentsResponse
-				err = json.Unmarshal(commentsBody, &postResponse)
-				if err != nil {
-					lc.logger.Sugar().Infof("postsBody: %s", commentsBody)
-					lc.logger.Info(err.Error())
-				}
+			commentsBody, _ := lc.callLemmyAPI("GET", "comment/list?sort=New", nil)
 
-				for _, comment := range postResponse.Comments {
-					if !seenItems[comment.Comment.ID] {
-						select {
-						case commentsChan <- comment.Comment:
-							seenItems[comment.Comment.ID] = true
-							backoffReset = true
-						default:
-							lc.logger.Info("Channel closed or not ready")
-							return
-						}
+			var postResponse CommentsResponse
+			_ = json.Unmarshal(commentsBody, &postResponse)
+
+			for _, comment := range postResponse.Comments {
+				if !seenItems[comment.Comment.ID] {
+					select {
+					case commentsChan <- comment.Comment:
+						seenItems[comment.Comment.ID] = true
+						backoffReset = true
+					default:
+						return
 					}
 				}
 			}
@@ -63,7 +55,6 @@ func (lc *LemmyClient) StreamNewComments(pauseAfter int, closeChan chan struct{}
 			// Wait for the posts channel to be closed or a timeout
 			select {
 			case <-closeChan:
-				lc.logger.Info("Comments channel closed.")
 				close(commentsChan)
 			case <-time.After(backoff):
 			}
